@@ -35,7 +35,7 @@ help:
 	@echo "	clean:	清理"
 	@echo "	help:	帮助"
 
-all:clean build qemu
+all:clean build run
 
 run: mangoOS.iso
 	qemu-system-$(HOSTARCH) -cdrom mangoOS.iso
