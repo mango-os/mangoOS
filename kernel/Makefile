@@ -74,7 +74,7 @@ install: install-headers install-kernel
 
 install-headers:
 	mkdir -p $(DESTDIR)$(INCLUDEDIR)
-	cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
+	cp -R -P include/. $(DESTDIR)$(INCLUDEDIR)/.
 
 install-kernel: mangoOS.kernel
 	mkdir -p $(DESTDIR)$(BOOTDIR)
