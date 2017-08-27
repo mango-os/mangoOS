@@ -58,4 +58,4 @@ install-headers:
 clean:
 	$(MAKE) -C libc clean
 	$(MAKE) -C kernel clean
-	rm -rf sysroot isodir mangoOS.iso
+	rm -rf sysroot isodir mangoOS.iso -k en-us
