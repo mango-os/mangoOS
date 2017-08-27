@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <kernel/tty.h>
+#include <kernel/portio.h>
 
 #include "vga.h"
 
@@ -38,13 +39,43 @@ void terminal_putentryat(unsigned char c, uint8_t color, size_t x, size_t y) {
 	terminal_buffer[index] = vga_entry(c, color);
 }
 
-void terminal_putchar(char c) {
-	unsigned char uc = c;
-	terminal_putentryat(uc, terminal_color, terminal_column, terminal_row);
-	if (++terminal_column == VGA_WIDTH) {
+static void terminal_scroll()
+{
+	uint16_t* buf = terminal_buffer;
+	for ( size_t y = 1; y < VGA_HEIGHT; y++ )
+		for ( size_t x = 0; x < VGA_WIDTH; x++ )
+			buf[(y-1) * VGA_WIDTH + x] = buf[y * VGA_WIDTH + x];
+	for ( size_t x = 0; x < VGA_WIDTH; x++ )
+		buf[(VGA_HEIGHT-1) * VGA_WIDTH + x] = make_vgaentry(' ', terminal_color);
+}
+
+static void terminal_newline()
+{
+	terminal_column = 0;
+	if ( terminal_row + 1 == VGA_HEIGHT )
+		terminal_scroll();
+	else
+		terminal_row++;
+}
+
+void terminal_putchar(char c)
+{
+	if ( c == '\n' )
+		terminal_newline();
+	else if ( c == '\r' )
 		terminal_column = 0;
-		if (++terminal_row == VGA_HEIGHT)
-			terminal_row = 0;
+	else if ( c == '\b' )
+	{
+		terminal_column--;
+		terminal_writestring(" ");
+		terminal_column--;
+	}
+	else
+	{
+		if ( terminal_column == VGA_WIDTH )
+			terminal_newline();
+		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+		terminal_column++;
 	}
 }
 
@@ -55,4 +86,30 @@ void terminal_write(const char* data, size_t size) {
 
 void terminal_writestring(const char* data) {
 	terminal_write(data, strlen(data));
+}
+
+void terminal_drawcursor(int row , int column) {
+	unsigned short cursorLocation = row * 80 + (column);
+	outport8(0x3D4, 14);                 
+	outport8(0x3D5, cursorLocation >> 8); 
+	outport8(0x3D4, 15);                  
+	outport8(0x3D5, cursorLocation); 
+}
+
+void terminal_displaycursor(state)
+{
+	//TODO on or off
+}
+
+void terminal_cursorpos(int row, int column)
+{
+		if (!row == -1)
+		{
+			terminal_row = row;
+		}
+
+		if (!column == -1)
+		{
+			terminal_column = column;
+		}
 }

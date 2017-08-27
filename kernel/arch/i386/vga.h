@@ -30,4 +30,11 @@ static inline uint16_t vga_entry(unsigned char uc, uint8_t color) {
 	return (uint16_t) uc | (uint16_t) color << 8;
 }
 
+static inline uint16_t make_vgaentry(char c, uint8_t color)
+{
+	uint16_t c16 = c;
+	uint16_t color16 = color;
+	return c16 | color16 << 8;
+}
+
 #endif
