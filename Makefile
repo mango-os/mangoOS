@@ -38,7 +38,7 @@ help:
 all:clean build run
 
 run: mangoOS.iso
-	qemu-system-$(HOSTARCH) -cdrom mangoOS.iso
+	qemu-system-$(HOSTARCH) -cdrom mangoOS.iso  -k en-us
 
 build: install-headers
 	$(MAKE) -C libc install
@@ -58,4 +58,4 @@ install-headers:
 clean:
 	$(MAKE) -C libc clean
 	$(MAKE) -C kernel clean
-	rm -rf sysroot isodir mangoOS.iso -k en-us
+	rm -rf sysroot isodir mangoOS.iso
