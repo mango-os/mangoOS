@@ -1,0 +1,24 @@
+###############################################################
+# bochsrc.bxrc file for Finix.
+###############################################################
+
+# how much memory the emulated machine will have
+megs: 32
+
+# filename of ROM images
+# BIOS已经修改，地址可以不加，可以根据文件大小进行推断，如里加地址要与文件大小相匹配
+romimage: file=$BXSHARE/BIOS-bochs-latest
+vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+
+# what disk images will be used 
+# 配置镜像名
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata0-master: type=cdrom, path="mangoOS.iso", status=inserted
+boot: cdrom
+
+# where do we send log messages?
+log: bochsout.txt
+
+# disable the mouse, since Finix is text only
+mouse: enabled=0
+
